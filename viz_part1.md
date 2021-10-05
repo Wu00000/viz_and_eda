@@ -16,6 +16,10 @@ library(tidyverse)
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
+``` r
+library(ggridges)
+```
+
 loading in a dataset that we’ll use often
 
 ``` r
@@ -95,3 +99,125 @@ weather_df %>%
     ## Warning: Removed 15 rows containing missing values (geom_point).
 
 ![](viz_part1_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+Let’s make one more scatterplot.
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, size = prcp)) + 
+  geom_point(alpha = .3) + 
+  facet_grid(. ~ name) + 
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+## Use data manipulation as part of this
+
+``` r
+weather_df %>% 
+  filter(name == "CentralPark_NY") %>% 
+  mutate(
+    tmax = tmax * (9 / 5) + 32,
+    tmin = tmin * (9 / 5) + 32
+  ) %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point()
+```
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Stacking geoms
+
+Which geoms do you want?
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) + 
+  geom_smooth()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_smooth).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_bin_2d()
+```
+
+    ## Warning: Removed 15 rows containing non-finite values (stat_bin2d).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_histogram() + 
+  facet_grid(. ~ name)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_bin).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Let’s try some other plots…
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_density(alpha = .3)
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_density).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+Still with `tmax` and `name`
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = name, y = tmax)) + 
+  geom_boxplot()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+Some people like violin plots
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = name, y = tmax)) +
+  geom_violin()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_ydensity).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+What about ridges…
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmax, y = name)) + 
+  geom_density_ridges(alpha = .8, scale = .8)
+```
+
+    ## Picking joint bandwidth of 1.84
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_density_ridges).
+
+![](viz_part1_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
