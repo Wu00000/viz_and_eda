@@ -3,8 +3,9 @@ title: "ggplot 2"
 output: github_document
 ---
 
-```{r}
+```{r, message = FALSE}
 library(tidyverse)
+library(viridis)
 library(ggridges)
 
 knitr::opts_chunk$set(
@@ -32,6 +33,87 @@ weather_df =
     tmin = tmin / 10,
     tmax = tmax / 10) %>%
   select(name, id, everything())
+```
+
+
+##
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .3) +
+  labs(
+    title = "Temperature at three station",
+    x = "Minimum daily temp (C)",
+    y = "Maximum daily temp (C)")
+```
+
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .3) +
+  labs(
+    title = "Temperature at three station",
+    x = "Minimum daily temp (C)",
+    y = "Maximum daily temp (C)",
+    caption = "Data from rnoaa package with three stations"
+    ) + 
+  scale_x_continuous(
+    breaks = c(-15, 0, 15),
+    label = c("-15 C", "0", "15")
+  ) + 
+  scale_y_continuous(
+    trans = "sqrt",
+    position = "right"
+  )
+```
+
+
+Color scales
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .3) +
+  labs(
+    title = "Temperature at three station",
+    x = "Minimum daily temp (C)",
+    y = "Maximum daily temp (C)",
+    caption = "Data from rnoaa package with three stations"
+    ) + 
+  scale_x_continuous(
+    breaks = c(-15, 0, 15),
+    label = c("-15 C", "0", "15")
+  ) + 
+  scale_y_continuous(
+    trans = "sqrt",
+    position = "right"
+  ) + 
+  scale_color_hue(
+    name = "Location",
+    h = c(100, 300)) + 
+  # Using Viridis package
+  scale_color_viridis_d()
+```
+
+## Themes
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .3) +
+  labs(
+    title = "Temperature at three station",
+    x = "Minimum daily temp (C)",
+    y = "Maximum daily temp (C)",
+    caption = "Data from rnoaa package with three stations"
+    ) + 
+  # Using Viridis package
+  scale_color_viridis_d() + 
+  # Be careful about the order below
+  theme_minimal() + 
+  theme(legend.position = "bottom")
 ```
 
 
