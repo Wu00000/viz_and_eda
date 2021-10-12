@@ -38,3 +38,62 @@ weather_df =
 ```
 
 
+## `group by`
+
+```{r}
+weather_df %>% 
+  group_by(name, month)
+```
+
+
+## count some things
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(n_obs = n())
+
+weather_df %>% 
+  count(name)
+```
+
+It's nice that summarize produces a data frame
+
+```{r}
+weather_df %>% 
+  janitor::tabyl(month, name)
+```
+
+
+
+## More general summaries
+
+Let's count, take means, look at SDs
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(
+    n_obs = n(),
+    mean_tamx = mean(tmax, na.rm = TRUE),
+    median_tamx = median(tmax, na.rm = TRUE),
+    sd_tamx = sd(tmax, na.rm = TRUE)
+  ) %>% 
+  ggplot(aes(x = month, y = mean_tamx, color = name)) + 
+  geom_point() +
+  geom_line()
+```
+
+
+Formatting tabkle outputs
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  summarize(
+    n_obs = n(),
+    mean_tmax = mean(tmax, na.rm = TRUE)
+  ) %>% 
+  knitr::kable(digits = 2)
+```
+
